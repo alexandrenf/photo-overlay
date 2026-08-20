@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-14
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build release app
+        env:
+          APP_VERSION: ${{ github.ref_name }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          APP_VERSION="${APP_VERSION#v}" make zip
+          shasum -a 256 dist/Overlay-macOS.zip > dist/Overlay-macOS.zip.sha256
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            dist/Overlay-macOS.zip \
+            dist/Overlay-macOS.zip.sha256 \
+            --title "Overlay $GITHUB_REF_NAME" \
+            --generate-notes
