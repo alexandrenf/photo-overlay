@@ -345,8 +345,8 @@ final class EditorCanvasNSView: NSView, NSTextFieldDelegate {
             return
         }
 
-        if let selectionPreview, let selectionDragOriginal {
-            let didChange = selectionPreview != selectionDragOriginal
+        if let selectionPreview, let original = selectionDragOriginal {
+            let didChange = selectionPreview != original
             if didChange {
                 document.updateAnnotation(selectionPreview)
             }
@@ -765,10 +765,15 @@ final class EditorCanvasNSView: NSView, NSTextFieldDelegate {
         }
 
         let min = viewport.viewPoint(fromPixelPoint: cropSelection.standardized.origin)
-        let max = viewport.viewPoint(
+        let maxPoint = viewport.viewPoint(
             fromPixelPoint: PixelPoint(x: cropSelection.standardized.maxX, y: cropSelection.standardized.maxY)
         )
-        let cropRect = NSRect(x: min.x, y: min.y, width: max.x - min.x, height: max.y - min.y)
+        let cropRect = NSRect(
+            x: min.x,
+            y: min.y,
+            width: maxPoint.x - min.x,
+            height: maxPoint.y - min.y
+        )
 
         NSRect(x: imageRect.minX, y: imageRect.minY, width: imageRect.width, height: max(0, cropRect.minY - imageRect.minY)).fill()
         NSRect(x: imageRect.minX, y: cropRect.maxY, width: imageRect.width, height: max(0, imageRect.maxY - cropRect.maxY)).fill()

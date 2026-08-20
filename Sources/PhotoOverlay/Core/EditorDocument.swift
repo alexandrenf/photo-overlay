@@ -432,7 +432,7 @@ public final class EditorDocument: ObservableObject {
 }
 
 private extension EditorDocument {
-    func makeSnapshot() -> Snapshot {
+    private func makeSnapshot() -> Snapshot {
         Snapshot(
             baseImage: baseImage,
             imageSize: imageSize,
@@ -441,7 +441,7 @@ private extension EditorDocument {
         )
     }
 
-    func restore(_ snapshot: Snapshot) {
+    private func restore(_ snapshot: Snapshot) {
         baseImage = snapshot.baseImage
         imageSize = snapshot.imageSize
         annotations = snapshot.annotations
@@ -455,7 +455,7 @@ private extension EditorDocument {
         redoStack.removeAll()
     }
 
-    func pushUndo(_ snapshot: Snapshot) {
+    private func pushUndo(_ snapshot: Snapshot) {
         undoStack.append(snapshot)
         let overflow = undoStack.count - max(maximumHistoryDepth, 1)
         if overflow > 0 {
@@ -468,7 +468,7 @@ private extension EditorDocument {
         mutation()
     }
 
-    func snapshotMatchesCurrentState(_ snapshot: Snapshot) -> Bool {
+    private func snapshotMatchesCurrentState(_ snapshot: Snapshot) -> Bool {
         let hasSameBaseImage: Bool
         switch (snapshot.baseImage, baseImage) {
         case (nil, nil):

@@ -144,7 +144,7 @@ final class AppCoordinator: ObservableObject {
 
         if provider.canLoadObject(ofClass: NSImage.self) {
             provider.loadObject(ofClass: NSImage.self) { [weak self] object, error in
-                Task { @MainActor in
+                Task { @MainActor [weak self] in
                     if let error {
                         self?.present(error)
                     } else if let image = object as? NSImage {
@@ -162,7 +162,7 @@ final class AppCoordinator: ObservableObject {
         }
 
         provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { [weak self] item, error in
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
                 if let error {
                     self?.present(error)
                     return
